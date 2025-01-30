@@ -333,8 +333,8 @@ class PreviewManagerImpl(
             })
 
             impl.updateFrameConfig(FrameConfig(100, 400, 1.0))
-            println(impl.gradleCallbackPort)
-            println(impl.previewSocket.localPort.toString())
+            println("Gradle port: ${impl.gradleCallbackPort}")
+            println("Preview port: ${impl.previewSocket.localPort}")
         }
     }
 }
