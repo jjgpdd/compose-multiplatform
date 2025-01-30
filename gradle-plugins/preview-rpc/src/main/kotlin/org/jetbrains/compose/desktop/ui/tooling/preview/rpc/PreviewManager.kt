@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.concurrent.thread
+import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 data class PreviewHostConfig(
@@ -304,5 +305,36 @@ class PreviewManagerImpl(
     private fun onError(error: String) {
         log.error { error }
         previewListener.onError(error)
+    }
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            val impl = PreviewManagerImpl(object : PreviewListener {
+                override fun onNewBuildRequest() {
+                    println("onNewBuildRequest")
+                }
+
+                override fun onFinishedBuild(success: Boolean) {
+                    println()
+                }
+
+                override fun onNewRenderRequest(previewRequest: FrameRequest) {
+                    println(previewRequest)
+                }
+
+                override fun onRenderedFrame(frame: RenderedFrame) {
+                    println(frame)
+                }
+
+                override fun onError(error: String) {
+                    println(error)
+                }
+            })
+
+            impl.updateFrameConfig(FrameConfig(100, 400, 1.0))
+            println(impl.gradleCallbackPort)
+            println(impl.previewSocket.localPort.toString())
+        }
     }
 }
